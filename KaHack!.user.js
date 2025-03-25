@@ -81,7 +81,7 @@
     handle.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
     handle.style.fontSize = '1.5vw';
     // Changed top handle text
-    handle.textContent = 'Kahoot Exploit by JW';
+    handle.textContent = 'Kahoot Exploit';
     handle.style.color = 'white';
     handle.style.width = '97.5%';
     handle.style.height = '2.5vw';
