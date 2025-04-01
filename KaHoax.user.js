@@ -358,6 +358,155 @@
     showAnswersSlider.className = 'slider';
     showAnswersSwitch.appendChild(showAnswersSlider);
 
+    // CSS style including media queries for mobile
+    const style = document.createElement('style');
+    style.textContent = `
+    .custom-slider {
+        background: white;
+        border: none;
+        outline: none;
+        cursor: ew-resize;
+        appearance: none;
+        height: 0;
+    }
+    .custom-slider::-webkit-slider-thumb {
+        appearance: none;
+        width: 1.75vw;
+        height: 1.75vw;
+        background-color: rgb(47, 47, 47);
+        border-radius: 50%;
+        cursor: ew-resize;
+        margin-top: -0.5vw;
+    }
+    .custom-slider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 0.75vw;
+        background-color: white;
+        cursor: ew-resize;
+        border-radius: 1vw;
+        background: linear-gradient(to right, red, yellow, limegreen);
+    }
+    :root {
+      --switch-width: 5.9vw;
+      --switch-height: 3.3vw;
+      --slider-size: 2.5vw;
+      --slider-thumb-size: 1.3vw;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: var(--switch-width);
+      height: var(--switch-height);
+      margin: 2.5vw;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: red;
+      transition: 0.8s;
+      border-radius: .5vw;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: var(--slider-size);
+      width: var(--slider-size);
+      left: calc(var(--slider-thumb-size) / 3);
+      bottom: calc(var(--slider-thumb-size) / 3);
+      background-color: rgb(43, 43, 43);
+      transition: 0.8s;
+      border-radius: .5vw;
+    }
+    input:checked + .slider {
+      background-color: green;
+    }
+    input:focus + .slider {
+      box-shadow: 0 0 1px green;
+    }
+    input:checked + .slider:before {
+      transform: translateX(calc(var(--slider-size)));
+    }
+
+    /* MEDIA QUERY for narrower screens (phones, small tablets). */
+    @media (max-width: 768px) {
+      .floating-ui {
+        width: 80vw !important;
+        left: 10vw !important;
+        top: 5vh !important;
+        border-radius: 3vw !important;
+      }
+      .handle {
+        font-size: 4vw !important;
+        height: 8vw !important;
+        line-height: 6vw !important;
+        border-radius: 3vw 3vw 0 0 !important;
+      }
+      .minimize-button, .close-button {
+        width: 10vw !important;
+        height: 8vw !important;
+        font-size: 4vw !important;
+      }
+      .floating-ui h2 {
+        font-size: 4vw !important;
+        margin: 2vw !important;
+      }
+      .floating-ui input[type="text"] {
+        font-size: 3vw !important;
+        width: 60vw !important;
+        height: 6vw !important;
+        border-radius: 2vw !important;
+      }
+      .floating-ui button {
+        font-family: "Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        font-size: 3vw !important;
+        width: 60vw !important;
+        height: 7vw !important;
+        border-radius: 2vw !important;
+      }
+      .floating-ui .custom-slider::-webkit-slider-thumb {
+        width: 4vw !important;
+        height: 4vw !important;
+        margin-top: -1.3vw !important;
+      }
+      .floating-ui .custom-slider::-webkit-slider-runnable-track {
+        height: 2vw !important;
+      }
+      :root {
+        --switch-width: 12vw;
+        --switch-height: 6vw;
+        --slider-size: 4vw;
+        --slider-thumb-size: 2vw;
+      }
+      .switch {
+        margin: 3vw !important;
+      }
+      .floating-ui h1,
+      .floating-ui h2,
+      .floating-ui span {
+        font-size: 3vw !important;
+      }
+      /* For the dropdown on mobile, let's make it wider. */
+      .floating-ui div[style*="position: absolute;"][style*="z-index: 10000"] {
+        width: 60vw !important;
+      }
+      /* Adjust X button position on mobile */
+      .floating-ui button[style*="position: absolute;"][style*="background-color: red"] {
+        top: -3vw !important;
+        right: -3vw !important;
+        width: 6vw !important;
+        height: 6vw !important;
+        font-size: 3vw !important;
+      }
+    }
+    `;
+    document.head.appendChild(style);
+
     // INFO
     const header4 = document.createElement('h2');
     header4.textContent = 'INFO';
@@ -725,11 +874,5 @@
         }
         questionsLabel.textContent = 'Question ' + (info.questionNum + 1) + ' / ' + info.numQuestions;
     }, 1);
-
-    // Remove the style element creation and replace it with this:
-    const styleLink = document.createElement('link');
-    styleLink.rel = 'stylesheet';
-    styleLink.href = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/custom/styles.css';
-    document.head.appendChild(styleLink);
 })();
  
