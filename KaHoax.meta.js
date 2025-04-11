@@ -7,5 +7,5 @@
 // @downloadURL  https://github.com/KRWCLASSIC/KaHoax/raw/main/KaHoax.user.js
 // @author       KRWCLASSIC, jokeri2222, johnweeky
 // @match        https://kahoot.it/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=kahoot.it
+// @icon         https://raw.githubusercontent.com/KRWCLASSIC/KaHoax/refs/heads/main/kahoot.svg
 // @grant        none

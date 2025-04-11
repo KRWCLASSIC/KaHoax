@@ -4,7 +4,7 @@
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=kahoot.it
+// @icon         https://raw.githubusercontent.com/KRWCLASSIC/KaHoax/refs/heads/main/kahoot.svg
 // @grant        none
 // ==/UserScript==
 (function() {
