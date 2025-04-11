@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KaHoax
-// @version      1.1.1
+// @version      1.1.2
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
@@ -8,7 +8,7 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Version = '1.1.1';
+    var Version = '1.1.2';
 
     var questions = [];
     var info = {
