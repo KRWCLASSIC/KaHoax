@@ -22,8 +22,10 @@ This is a Kahoot cheat made for browsers and Tampermonkey.
 The latest version includes Auto Answer, Show Answers and Quiz search based on John Weeky API and upgraded by me. Only quiz and multi-select answers are supported. Type answers etc. are not supported. You can drag the menu (On PC) from the top bar and minimize and close if you want. Closing the cheat will end the script and will stop everything it was made to. You can use this as a panic button.
 
 ## Gallery
-
-`soon`
+<details>
+![KaHoax1](https://github.com/user-attachments/assets/1fe21909-7c32-4b12-89d4-955e1b95eb0e)
+![KaHoax2](https://github.com/user-attachments/assets/6ad6c3df-22d2-421b-9989-482c36cc6e25)
+</details>
 
 ## Credits
 
