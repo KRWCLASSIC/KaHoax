@@ -24,8 +24,12 @@ The latest version includes Auto Answer, Show Answers and Quiz search based on J
 ## Gallery
 
 <details>
+<summary>How it looks?</summary>
+
 ![KaHoax1](https://github.com/user-attachments/assets/1fe21909-7c32-4b12-89d4-955e1b95eb0e)
+
 ![KaHoax2](https://github.com/user-attachments/assets/6ad6c3df-22d2-421b-9989-482c36cc6e25)
+
 </details>
 
 ## Credits
