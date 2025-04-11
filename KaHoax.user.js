@@ -21,7 +21,7 @@
     var PPT = 900;
     var Answered_PPT = 900;
     var autoAnswer = false;
-    var showAnswers = true;
+    var showAnswers = false;
     var inputLag = 100;
 
     // Helper: Finds an element by attribute value.
@@ -294,7 +294,7 @@
     sliderContainer.style.justifyContent = 'center';
 
     const pointsLabel = document.createElement('span');
-    pointsLabel.textContent = 'Points per Question: 950';
+    pointsLabel.textContent = 'Points per Question: 900';
     pointsLabel.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
     pointsLabel.style.fontSize = '0.9em';
     pointsLabel.style.margin = '0 0 10px 0';
@@ -305,7 +305,7 @@
     pointsSlider.type = 'range';
     pointsSlider.min = '500';
     pointsSlider.max = '1000';
-    pointsSlider.value = '950';
+    pointsSlider.value = '900';
     pointsSlider.style.width = '100%';
     pointsSlider.style.height = '10px';
     pointsSlider.style.border = 'none';
