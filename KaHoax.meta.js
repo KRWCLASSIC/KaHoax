@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KaHoax
-// @version      1.1.1
+// @version      1.1.2
 // @namespace    https://github.com/KRWCLASSIC
 // @description  A hack for kahoot.it!
 // @updateURL    https://github.com/KRWCLASSIC/KaHoax/raw/main/KaHoax.meta.js
