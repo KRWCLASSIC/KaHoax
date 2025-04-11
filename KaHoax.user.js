@@ -684,34 +684,13 @@
         offsetX = e.clientX - uiElement.getBoundingClientRect().left;
         offsetY = e.clientY - uiElement.getBoundingClientRect().top;
     });
-    
-    // Add touch support for mobile
-    handle.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        const touch = e.touches[0];
-        offsetX = touch.clientX - uiElement.getBoundingClientRect().left;
-        offsetY = touch.clientY - uiElement.getBoundingClientRect().top;
-        e.preventDefault();
-    });
-    
+
     document.addEventListener('mousemove', (e) => {
         if (isDragging) {
             const x = e.clientX - offsetX;
             const y = e.clientY - offsetY;
             uiElement.style.left = x + 'px';
             uiElement.style.top = y + 'px';
-        }
-    });
-    
-    // Add touch movement for mobile
-    document.addEventListener('touchmove', (e) => {
-        if (isDragging) {
-            const touch = e.touches[0];
-            const x = touch.clientX - offsetX;
-            const y = touch.clientY - offsetY;
-            uiElement.style.left = x + 'px';
-            uiElement.style.top = y + 'px';
-            e.preventDefault();
         }
     });
     
@@ -1003,21 +982,6 @@
             }
         }, time - delay);
     }
-
-    // Keyboard shortcuts for hiding/showing the UI
-    document.addEventListener('keydown', (event) => {
-        console.log(`Key pressed: "${event.key}"`);
-        let overlay = document.querySelector(".floating-ui");
-        if (!overlay) return console.log("Overlay not found!");
-        if (event.key === ",") {
-            console.log("Hiding overlay...");
-            overlay.style.display = "none";
-        }
-        if (event.key === ".") {
-            console.log("Showing overlay...");
-            overlay.style.display = "block";
-        }
-    });
 
     // Interval loop: checks question state, auto-answer logic, etc.
     setInterval(function () {
