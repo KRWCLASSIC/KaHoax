@@ -30,6 +30,8 @@ The latest version includes Auto Answer, Show Answers and Quiz search based on J
 
 ![KaHoax2](https://github.com/user-attachments/assets/6ad6c3df-22d2-421b-9989-482c36cc6e25)
 
+![Kahoax3](https://github.com/user-attachments/assets/240db06c-5d09-46a6-bc22-f9cf1acd2faa)
+
 </details>
 
 ## Credits
