@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name         Kahoax
-// @version      1.1
+// @name         KaHoax
+// @version      1.1.1
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=kahoot.it
+// @icon         data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDg2IDIgMiA2LjQ4NiAyIDEyczQuNDg2IDEwIDEwIDEwIDEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJ6bTAgMThjLTQuNDExIDAtOC0zLjU4OS04LThzMy41ODktOCA4LTggOCAzLjU4OSA4IDgtMy41ODkgOC04IDh6bS0yLTEyaDR2NGgtNHYtNHptMCA2aDR2NGgtNHYtNHptLTYgMGg0djRoLTR2LTR6bTEyIDBoNHY0aC00di00eiIvPjwvc3ZnPg==
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Version = '1.1';
+    var Version = '1.1.1';
 
     var questions = [];
     var info = {
