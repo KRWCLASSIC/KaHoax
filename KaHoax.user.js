@@ -18,10 +18,10 @@
         defaultIL: true,
         ILSetQuestion: -1,
     };
-    var PPT = 950;
-    var Answered_PPT = 950;
+    var PPT = 900;
+    var Answered_PPT = 900;
     var autoAnswer = false;
-    var showAnswers = false;
+    var showAnswers = true;
     var inputLag = 100;
 
     // Helper: Finds an element by attribute value.
@@ -59,7 +59,6 @@
         info.numQuestions = 0;
         info.questionNum = -1;
         info.lastAnsweredQuestion = -1;
-        inputLag = 100;
         questionsLabel.textContent = 'Question 0 / 0';
     }
 
