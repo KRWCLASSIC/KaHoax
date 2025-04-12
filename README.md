@@ -26,11 +26,11 @@ The latest version includes Auto Answer, Show Answers and Quiz search based on J
 <details>
 <summary>How it looks?</summary>
 
-![KaHoax1](https://github.com/user-attachments/assets/1fe21909-7c32-4b12-89d4-955e1b95eb0e)
+![KaHoax1](https://github.com/user-attachments/assets/77ab5153-76dd-4921-b08a-fc7d40c94fb5)
 
-![KaHoax2](https://github.com/user-attachments/assets/6ad6c3df-22d2-421b-9989-482c36cc6e25)
+![KaHoax2](https://github.com/user-attachments/assets/04b33000-2d21-4766-86ff-2406de382abd)
 
-![Kahoax3](https://github.com/user-attachments/assets/240db06c-5d09-46a6-bc22-f9cf1acd2faa)
+![KaHoaxMobile](https://github.com/user-attachments/assets/8163d803-2593-4fa2-9196-955c456a1295)
 
 </details>
 
