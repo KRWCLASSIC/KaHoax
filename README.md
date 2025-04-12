@@ -1,5 +1,5 @@
 
-# KaHoax `1.1.3`
+# KaHoax `1.1.4`
 
 This is a Kahoot cheat made for browsers and Tampermonkey.
 

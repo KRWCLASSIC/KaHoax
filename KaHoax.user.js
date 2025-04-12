@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KaHoax
-// @version      1.1.3
+// @version      1.1.4
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
@@ -8,7 +8,7 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Version = '1.1.3';
+    var Version = '1.1.4';
 
     var questions = [];
     var info = {
@@ -156,7 +156,7 @@
 
     // QUIZ ID/NAME
     const headerText = document.createElement('h2');
-    headerText.textContent = 'QUIZ ID/NAME';
+    headerText.textContent = 'QUIZ ID or NAME';
     headerText.style.display = 'block';
     headerText.style.margin = '15px 0';
     headerText.style.textAlign = 'center';
@@ -178,7 +178,7 @@
     const inputBox = document.createElement('input');
     inputBox.type = 'text';
     inputBox.style.color = '#ffffff';
-    inputBox.placeholder = 'Quiz Id/Name of Quiz here...';
+    inputBox.placeholder = 'Quiz Id or search for the Quiz here...';
     inputBox.style.width = '100%';
     inputBox.style.height = '35px';
     inputBox.style.margin = '0';
@@ -273,55 +273,6 @@
 
     uiElement.appendChild(inputContainer);
 
-    // POINTS PER QUESTION
-    const header2 = document.createElement('h2');
-    header2.textContent = 'POINTS PER QUESTION';
-    header2.style.display = 'block';
-    header2.style.margin = '15px 0';
-    header2.style.textAlign = 'center';
-    header2.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
-    header2.style.fontSize = '1.25em';
-    header2.style.color = 'white';
-    header2.style.textShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
-    uiElement.appendChild(header2);
-
-    const sliderContainer = document.createElement('div');
-    sliderContainer.style.width = '90%';
-    sliderContainer.style.margin = '15px auto';
-    sliderContainer.style.display = 'flex';
-    sliderContainer.style.flexDirection = 'column';
-    sliderContainer.style.alignItems = 'center';
-    sliderContainer.style.justifyContent = 'center';
-
-    const pointsLabel = document.createElement('span');
-    pointsLabel.textContent = 'Points per Question: 900';
-    pointsLabel.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
-    pointsLabel.style.fontSize = '0.9em';
-    pointsLabel.style.margin = '0 0 10px 0';
-    pointsLabel.style.color = 'white';
-    sliderContainer.appendChild(pointsLabel);
-
-    const pointsSlider = document.createElement('input');
-    pointsSlider.type = 'range';
-    pointsSlider.min = '500';
-    pointsSlider.max = '1000';
-    pointsSlider.value = '900';
-    pointsSlider.style.width = '100%';
-    pointsSlider.style.height = '10px';
-    pointsSlider.style.border = 'none';
-    pointsSlider.style.outline = 'none';
-    pointsSlider.style.cursor = 'pointer';
-    pointsSlider.className = 'custom-slider';
-    sliderContainer.appendChild(pointsSlider);
-
-    uiElement.appendChild(sliderContainer);
-
-    pointsSlider.addEventListener('input', () => {
-        const points = +pointsSlider.value;
-        PPT = points;
-        pointsLabel.textContent = 'Points per Question: ' + points;
-    });
-
     // ANSWERING
     const header3 = document.createElement('h2');
     header3.textContent = 'ANSWERING';
@@ -336,11 +287,20 @@
 
     const answeringContainer = document.createElement('div');
     answeringContainer.style.display = 'flex';
+    answeringContainer.style.flexDirection = 'column';
     answeringContainer.style.alignItems = 'center';
-    answeringContainer.style.justifyContent = 'space-evenly';
     answeringContainer.style.margin = '15px auto';
     answeringContainer.style.width = '90%';
     uiElement.appendChild(answeringContainer);
+
+    // Toggle switches container - MOVED BEFORE the slider
+    const togglesContainer = document.createElement('div');
+    togglesContainer.style.display = 'flex';
+    togglesContainer.style.alignItems = 'center';
+    togglesContainer.style.justifyContent = 'space-evenly';
+    togglesContainer.style.width = '100%';
+    togglesContainer.style.marginBottom = '15px';
+    answeringContainer.appendChild(togglesContainer);
 
     // Auto Answer
     const autoContainer = document.createElement('div');
@@ -411,7 +371,7 @@
         }
     });
 
-    answeringContainer.appendChild(autoContainer);
+    togglesContainer.appendChild(autoContainer);
 
     // Show Answers
     const showContainer = document.createElement('div');
@@ -481,7 +441,45 @@
         }
     });
 
-    answeringContainer.appendChild(showContainer);
+    togglesContainer.appendChild(showContainer);
+
+    // Points per Question slider - MOVED AFTER the toggles
+    const sliderContainer = document.createElement('div');
+    sliderContainer.style.width = '100%';
+    sliderContainer.style.margin = '0 auto';
+    sliderContainer.style.display = 'flex';
+    sliderContainer.style.flexDirection = 'column';
+    sliderContainer.style.alignItems = 'center';
+    sliderContainer.style.justifyContent = 'center';
+
+    const pointsLabel = document.createElement('span');
+    pointsLabel.textContent = 'Points per Question: ~900';
+    pointsLabel.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
+    pointsLabel.style.fontSize = '0.9em';
+    pointsLabel.style.margin = '0 0 10px 0';
+    pointsLabel.style.color = 'white';
+    sliderContainer.appendChild(pointsLabel);
+
+    const pointsSlider = document.createElement('input');
+    pointsSlider.type = 'range';
+    pointsSlider.min = '500';
+    pointsSlider.max = '1000';
+    pointsSlider.value = '900';
+    pointsSlider.style.width = '100%';
+    pointsSlider.style.height = '10px';
+    pointsSlider.style.border = 'none';
+    pointsSlider.style.outline = 'none';
+    pointsSlider.style.cursor = 'pointer';
+    pointsSlider.className = 'custom-slider';
+    sliderContainer.appendChild(pointsSlider);
+
+    pointsSlider.addEventListener('input', () => {
+        const points = +pointsSlider.value;
+        PPT = points;
+        pointsLabel.textContent = 'Points per Question: ~' + points;
+    });
+
+    answeringContainer.appendChild(sliderContainer);
 
     // CSS style for the slider
     const sliderStyle = document.createElement('style');
@@ -568,11 +566,12 @@
     linksSection.style.padding = '0 15px';
 
     // Create developer entry with multiple icons/links
-    function createDeveloperEntry(name, links = []) {
+    function createDeveloperEntry(name, links = [], roles = []) {
         const entry = document.createElement('div');
         entry.style.display = 'flex';
         entry.style.alignItems = 'center';
         entry.style.margin = '8px 0';
+        entry.style.position = 'relative';
         
         // Developer name first
         const devName = document.createElement('span');
@@ -613,6 +612,47 @@
         });
         
         entry.appendChild(iconsContainer);
+        
+        // Role-specific badge colors
+        const badgeColors = {
+            'UI': '#E91E63',          // Pink/Red
+            'Mobile': '#2196F3',      // Blue
+            'Features': '#9C27B0',    // Purple
+            'Base': '#4CAF50',        // Green
+            'Bug Tester': '#FF9800',  // Orange
+            'Old UI': '#795548',      // Brown
+            'API': '#607D8B'          // Blue Gray
+        };
+        
+        // Add roles badges - display multiple small badges
+        if (roles && roles.length > 0) {
+            const badgesContainer = document.createElement('div');
+            badgesContainer.style.position = 'absolute';
+            badgesContainer.style.right = '0';
+            badgesContainer.style.top = '50%';
+            badgesContainer.style.transform = 'translateY(-50%)';
+            badgesContainer.style.display = 'flex';
+            badgesContainer.style.gap = '4px';
+            
+            roles.forEach((role) => {
+                const badge = document.createElement('div');
+                badge.style.backgroundColor = badgeColors[role] || '#888888';
+                badge.style.color = 'white';
+                badge.style.fontSize = '0.7em';
+                badge.style.padding = '2px 5px';
+                badge.style.borderRadius = '10px';
+                badge.style.opacity = '0.7';
+                badge.style.cursor = 'default';
+                badge.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
+                badge.style.whiteSpace = 'nowrap';
+                badge.textContent = role;
+                
+                badgesContainer.appendChild(badge);
+            });
+            
+            entry.appendChild(badgesContainer);
+        }
+        
         return entry;
     }
 
@@ -623,23 +663,29 @@
 
     // GitHub icon - using provided SVG
     const githubIcon = '<svg viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none" width="16" height="16"><path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M120.755 170c.03-4.669.059-20.874.059-27.29 0-9.272-3.167-15.339-6.719-18.41 22.051-2.464 45.201-10.863 45.201-49.067 0-10.855-3.824-19.735-10.175-26.683 1.017-2.516 4.413-12.63-.987-26.32 0 0-8.296-2.672-27.202 10.204-7.912-2.213-16.371-3.308-24.784-3.352-8.414.044-16.872 1.14-24.785 3.352C52.457 19.558 44.162 22.23 44.162 22.23c-5.4 13.69-2.004 23.804-.987 26.32C36.824 55.498 33 64.378 33 75.233c0 38.204 23.149 46.603 45.2 49.067-3.551 3.071-6.719 9.138-6.719 18.41 0 6.416.03 22.621.059 27.29M27 130c9.939.703 15.67 9.735 15.67 9.735 8.834 15.199 23.178 10.803 28.815 8.265"></path></svg>';
-    // Add developers with their links in the requested order
-    // 1. KRWCLASSIC with additional links 
+
+    // Add developers with their links and roles in the requested order
+    // 1. KRWCLASSIC with roles
     linksSection.appendChild(createDeveloperEntry('KRWCLASSIC', [
         {icon: githubIcon, url: 'https://github.com/KRWCLASSIC', title: 'GitHub'},
-    ]));
+    ], ['UI', 'Bug Tester', 'Features']));
 
-    // 2. John Wee - now with GitHub link added
-    linksSection.appendChild(createDeveloperEntry('John Wee', [
+    // 2. John Wee with roles (removed "Idea")
+    linksSection.appendChild(createDeveloperEntry('johnweeky', [
         {icon: githubIcon, url: 'https://github.com/johnweeky', title: 'GitHub'},
         {icon: webIcon, url: 'https://johnw.ee', title: 'Website'},
         {icon: toolIcon, url: 'https://landing.kahoot.space', title: 'JW Tool Suite'}
-    ]));
+    ], ['API', 'Mobile', 'Features']));
 
-    // 3. jokeri2222
+    // 3. jokeri2222 with roles
     linksSection.appendChild(createDeveloperEntry('jokeri2222', [
         {icon: githubIcon, url: 'https://github.com/jokeri2222', title: 'GitHub'}
-    ]));
+    ], ['Base', 'Old UI', 'Features']));
+
+    // 4. Epic0001 with roles
+    linksSection.appendChild(createDeveloperEntry('Epic0001', [
+        {icon: githubIcon, url: 'https://github.com/Epic0001', title: 'GitHub'}
+    ], ['Bug Tester']));
 
     uiElement.appendChild(linksSection);
 
@@ -654,7 +700,6 @@
         isMinimized = !isMinimized;
         if (isMinimized) {
             headerText.style.display = 'none';
-            header2.style.display = 'none';
             header3.style.display = 'none';
             header4.style.display = 'none';
             inputContainer.style.display = 'none';
@@ -665,7 +710,6 @@
             uiElement.style.height = '40px';
         } else {
             headerText.style.display = 'block';
-            header2.style.display = 'block';
             header3.style.display = 'block';
             header4.style.display = 'block';
             inputContainer.style.display = 'flex';
@@ -759,95 +803,318 @@
                             if (!res.ok) throw new Error("Fetch failed");
                             const data = await res.json();
                         
-                            // Prevent duplicates
-                            if (item.querySelector('.preview-container')) return;
-                        
-                            const previewContainer = document.createElement('div');
-                            previewContainer.className = 'preview-container';
-                            previewContainer.style.marginTop = '10px';
-                            previewContainer.style.padding = '10px';
-                            previewContainer.style.backgroundColor = '#333';
-                            previewContainer.style.border = '1px solid #555';
-                            previewContainer.style.borderRadius = '5px';
-                            previewContainer.style.width = '100%';
-                            previewContainer.style.boxSizing = 'border-box';
-                        
+                            // If we already have the expanded view, do nothing (avoid duplicates)
+                            if (item.classList.contains('expanded-item')) {
+                                return;
+                            }
+                            
+                            // Mark this item as expanded
+                            item.classList.add('expanded-item');
+                            
+                            // Save original item styles and content
+                            const originalItemStyles = {
+                                display: item.style.display,
+                                alignItems: item.style.alignItems,
+                                padding: item.style.padding,
+                                cursor: item.style.cursor,
+                                borderBottom: item.style.borderBottom,
+                                backgroundColor: item.style.backgroundColor,
+                            };
+                            const originalContent = item.innerHTML;
+                            
+                            // Clear existing content
+                            item.innerHTML = '';
+                            
+                            // Create the header container (this will be clickable)
+                            const headerContainer = document.createElement('div');
+                            headerContainer.className = 'quiz-header-container';
+                            headerContainer.style.display = 'flex';
+                            headerContainer.style.alignItems = 'center';
+                            headerContainer.style.width = '100%';
+                            headerContainer.style.padding = '8px';
+                            headerContainer.style.boxSizing = 'border-box';
+                            headerContainer.style.cursor = 'pointer';
+                            
+                            // Re-add image and text to header
+                            const img = document.createElement('img');
+                            img.src = displayCover;
+                            img.alt = displayTitle;
+                            img.style.width = '40px';
+                            img.style.height = '40px';
+                            img.style.marginRight = '10px';
+                            img.style.borderRadius = '5px';
+                            img.style.objectFit = 'cover';
+                            headerContainer.appendChild(img);
+                            
+                            const text = document.createElement('span');
+                            text.textContent = displayTitle;
+                            text.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
+                            text.style.color = '#ffffff';
+                            text.style.fontSize = '0.9em';
+                            text.style.wordBreak = 'break-word';
+                            text.style.flex = '1';
+                            headerContainer.appendChild(text);
+                            
+                            // Create the content container (will be toggled)
+                            const contentContainer = document.createElement('div');
+                            contentContainer.className = 'quiz-content-container';
+                            contentContainer.style.width = '100%';
+                            contentContainer.style.marginTop = '10px';
+                            contentContainer.style.display = 'block'; // Initially visible
+                            
+                            // Add question count
                             const questionCount = document.createElement('p');
                             questionCount.textContent = `Questions: ${data.questions?.length || 0}`;
                             questionCount.style.margin = '5px 0';
                             questionCount.style.fontSize = '0.85em';
                             questionCount.style.fontWeight = 'bold';
                             questionCount.style.color = '#ffffff';
-                            previewContainer.appendChild(questionCount);
-                        
-                            const questionList = document.createElement('ul');
+                            questionCount.style.padding = '0 10px';
+                            contentContainer.appendChild(questionCount);
+                            
+                            // Create navigation controls and question display
+                            const questionList = document.createElement('div');
+                            questionList.className = 'question-list';
                             questionList.style.fontSize = '0.8em';
-                            questionList.style.paddingLeft = '20px';
                             questionList.style.margin = '5px 0';
-                        
-                            // Display only the first question
-                            const firstQuestion = data.questions[0];
-                            if (firstQuestion) {
-                                const li = document.createElement('li');
-                                li.textContent = firstQuestion.question || '[No question text]';
-                                li.style.color = '#ffffff';
-                                li.style.margin = '3px 0';
-                                questionList.appendChild(li);
-                        
-                                // Display correct answer
-                                if (firstQuestion.choices) {
-                                    const correctAnswer = firstQuestion.choices.find(choice => choice.correct);
-                                    if (correctAnswer) {
-                                        const answerLi = document.createElement('li');
-                                        answerLi.textContent = `Correct Answer: ${correctAnswer.answer}`;
-                                        answerLi.style.color = '#00ff00';
-                                        answerLi.style.margin = '3px 0';
-                                        questionList.appendChild(answerLi);
+                            questionList.style.padding = '0 10px 10px 10px';
+                            questionList.style.backgroundColor = '#333';
+                            questionList.style.border = '1px solid #555';
+                            questionList.style.borderRadius = '5px';
+                            
+                            // Add navigation container
+                            const navContainer = document.createElement('div');
+                            navContainer.style.display = 'flex';
+                            navContainer.style.alignItems = 'center';
+                            navContainer.style.justifyContent = 'space-between';
+                            navContainer.style.marginBottom = '8px';
+                            navContainer.style.marginTop = '8px';
+                            
+                            // Current question indicator
+                            const questionIndicator = document.createElement('span');
+                            questionIndicator.style.color = '#ffffff';
+                            questionIndicator.style.fontSize = '0.9em';
+                            
+                            // Navigation buttons
+                            const prevButton = document.createElement('button');
+                            prevButton.textContent = '←';
+                            prevButton.style.backgroundColor = '#444';
+                            prevButton.style.color = 'white';
+                            prevButton.style.border = 'none';
+                            prevButton.style.borderRadius = '3px';
+                            prevButton.style.padding = '1px 6px';
+                            prevButton.style.fontSize = '0.8em';
+                            prevButton.style.cursor = 'pointer';
+                            prevButton.style.minWidth = '20px';
+                            prevButton.style.minHeight = '20px';
+                            
+                            const nextButton = document.createElement('button');
+                            nextButton.textContent = '→';
+                            nextButton.style.backgroundColor = '#444';
+                            nextButton.style.color = 'white';
+                            nextButton.style.border = 'none';
+                            nextButton.style.borderRadius = '3px';
+                            nextButton.style.padding = '1px 6px';
+                            nextButton.style.fontSize = '0.8em';
+                            nextButton.style.cursor = 'pointer';
+                            nextButton.style.minWidth = '20px';
+                            nextButton.style.minHeight = '20px';
+                            
+                            navContainer.appendChild(prevButton);
+                            navContainer.appendChild(questionIndicator);
+                            navContainer.appendChild(nextButton);
+                            
+                            questionList.appendChild(navContainer);
+                            
+                            // Question content container
+                            const questionContent = document.createElement('div');
+                            questionContent.className = 'question-content';
+                            questionContent.style.border = '1px solid #555';
+                            questionContent.style.borderRadius = '3px';
+                            questionContent.style.padding = '8px';
+                            questionContent.style.marginBottom = '5px';
+                            questionList.appendChild(questionContent);
+                            
+                            // Store current question index
+                            let currentQuestionIndex = 0;
+                            const totalQuestions = data.questions?.length || 0;
+                            
+                            // Function to update displayed question
+                            const updateQuestionDisplay = () => {
+                                questionIndicator.textContent = `Q${currentQuestionIndex + 1}/${totalQuestions}`;
+                                
+                                // Clear previous content
+                                questionContent.innerHTML = '';
+                                
+                                const question = data.questions[currentQuestionIndex];
+                                if (question) {
+                                    // Question text
+                                    const questionText = document.createElement('p');
+                                    questionText.textContent = question.question || '[No question text]';
+                                    questionText.style.color = '#ffffff';
+                                    questionText.style.margin = '1px 0 5px 0';
+                                    questionText.style.fontWeight = 'bold';
+                                    questionText.style.fontSize = '0.9em';
+                                    questionText.style.lineHeight = '1.1';
+                                    questionContent.appendChild(questionText);
+                                    
+                                    // Display answer choices
+                                    if (question.choices && question.choices.length > 0) {
+                                        const choicesList = document.createElement('ul');
+                                        choicesList.style.listStyleType = 'none';
+                                        choicesList.style.padding = '0';
+                                        choicesList.style.margin = '5px 0 0 0';
+                                        
+                                        question.choices.forEach((choice, index) => {
+                                            const choiceItem = document.createElement('li');
+                                            choiceItem.style.padding = '2px 3px';
+                                            choiceItem.style.margin = '2px 0';
+                                            choiceItem.style.borderRadius = '3px';
+                                            choiceItem.style.backgroundColor = choice.correct ? 'rgba(0, 255, 0, 0.2)' : 'transparent';
+                                            choiceItem.style.color = choice.correct ? '#00ff00' : '#ffffff';
+                                            choiceItem.style.fontSize = '0.85em';
+                                            choiceItem.style.lineHeight = '1.1';
+                                            
+                                            // Add a colored marker based on correctness
+                                            const marker = choice.correct ? '✓' : '○';
+                                            choiceItem.textContent = `${marker} ${choice.answer || '[No answer text]'}`;
+                                            
+                                            choicesList.appendChild(choiceItem);
+                                        });
+                                        
+                                        questionContent.appendChild(choicesList);
                                     }
                                 }
-                            }
-                            previewContainer.appendChild(questionList);
+                                
+                                // Update button states
+                                prevButton.disabled = currentQuestionIndex === 0;
+                                prevButton.style.opacity = currentQuestionIndex === 0 ? '0.5' : '1';
+                                nextButton.disabled = currentQuestionIndex === totalQuestions - 1;
+                                nextButton.style.opacity = currentQuestionIndex === totalQuestions - 1 ? '0.5' : '1';
+                            };
+                            
+                            // Set up navigation button events
+                            prevButton.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent triggering the header click
+                                if (currentQuestionIndex > 0) {
+                                    currentQuestionIndex--;
+                                    updateQuestionDisplay();
+                                }
+                            });
+                            
+                            nextButton.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent triggering the header click
+                                if (currentQuestionIndex < totalQuestions - 1) {
+                                    currentQuestionIndex++;
+                                    updateQuestionDisplay();
+                                }
+                            });
+                            
+                            // Initialize display
+                            updateQuestionDisplay();
+                            
+                            contentContainer.appendChild(questionList);
                         
                             const linkToKahoot = document.createElement('a');
                             linkToKahoot.href = `https://create.kahoot.it/details/${quizUUID}`;
                             linkToKahoot.target = '_blank';
-                            linkToKahoot.textContent = 'View full quiz on Kahoot →';
-                            linkToKahoot.style.display = 'inline-block';
-                            linkToKahoot.style.margin = '5px 0';
-                            linkToKahoot.style.fontSize = '0.8em';
-                            linkToKahoot.style.color = '#007bff';
-                            previewContainer.appendChild(linkToKahoot);
-                        
+                            linkToKahoot.style.display = 'block';
+                            linkToKahoot.style.margin = '5px auto';  // Center horizontally
+                            linkToKahoot.style.padding = '5px 10px';
+                            linkToKahoot.style.fontSize = '0.9em';
+                            linkToKahoot.style.fontWeight = 'bold';
+                            linkToKahoot.style.textDecoration = 'none';
+                            linkToKahoot.style.backgroundColor = 'transparent';
+                            linkToKahoot.style.borderRadius = '5px';
+                            linkToKahoot.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
+                            linkToKahoot.style.width = 'fit-content';  // Only take as much width as needed
+                            linkToKahoot.style.textAlign = 'center';  // Center text
+
+                            // Create background element with more vibrant Kahoot colors
+                            const linkBackground = document.createElement('span');
+                            linkBackground.style.position = 'relative';
+                            linkBackground.style.display = 'inline-block';
+                            // More vibrant Kahoot colors
+                            linkBackground.style.background = 'linear-gradient(to right, #ff3355, #0088ff, #00cc44, #ffcc00)';
+                            linkBackground.style.webkitBackgroundClip = 'text';
+                            linkBackground.style.backgroundClip = 'text';
+                            linkBackground.style.color = 'transparent';
+                            linkBackground.style.textAlign = 'center';
+                            linkBackground.textContent = 'View full quiz on Kahoot →';
+
+                            linkToKahoot.textContent = '';
+                            linkToKahoot.appendChild(linkBackground);
+                            contentContainer.appendChild(linkToKahoot);
+
                             const selectButton = document.createElement('button');
                             selectButton.textContent = 'Select this quiz';
+                            selectButton.className = 'select-quiz-button';
                             selectButton.style.display = 'block';
                             selectButton.style.marginTop = '8px';
-                            selectButton.style.width = '100%';
-                            selectButton.style.padding = '5px';
+                            selectButton.style.width = 'calc(100% - 20px)';
+                            selectButton.style.margin = '8px 10px';
+                            selectButton.style.padding = '8px 12px';
                             selectButton.style.cursor = 'pointer';
                             selectButton.style.color = '#ffffff';
-                            selectButton.style.backgroundColor = '#555';
-                            selectButton.style.border = '1px solid #777';
+                            selectButton.style.fontWeight = 'bold';
+                            selectButton.style.backgroundColor = '#6c757d';
+                            selectButton.style.border = 'none';
                             selectButton.style.borderRadius = '5px';
-                            selectButton.style.fontSize = '0.85em';
-                            selectButton.style.transition = 'background-color 0.3s';
+                            selectButton.style.fontSize = '0.9em';
+                            selectButton.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+                            selectButton.style.fontFamily = '"Montserrat", "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif';
+                            selectButton.style.transition = 'background-color 0.3s';  // Add transition for hover effect
+
+                            // Add Enter button style hover effects (background color change only, no movement)
                             selectButton.addEventListener('mouseover', () => {
-                                selectButton.style.backgroundColor = '#666';
+                                selectButton.style.backgroundColor = '#5a6268';
                             });
+
                             selectButton.addEventListener('mouseout', () => {
-                                selectButton.style.backgroundColor = '#555';
+                                selectButton.style.backgroundColor = '#6c757d';
                             });
-                            selectButton.addEventListener('click', () => {
+
+                            selectButton.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent triggering the header click
                                 inputBox.value = quizUUID;
                                 dropdown.style.display = 'none';
                                 dropdownCloseButton.style.display = 'none';
                                 handleInputChange();
                             });
-                        
-                            previewContainer.appendChild(selectButton);
-                            item.appendChild(previewContainer);
+
+                            contentContainer.appendChild(selectButton);
+                            
+                            // Add the containers to the item
+                            item.appendChild(headerContainer);
+                            item.appendChild(contentContainer);
+                            
+                            // Set necessary item styles
+                            item.style.display = 'flex';
                             item.style.flexDirection = 'column';
                             item.style.alignItems = 'flex-start';
+                            item.style.borderBottom = '1px solid #444';
+                            
+                            // Set up the toggle functionality on header click
+                            headerContainer.addEventListener('click', (e) => {
+                                // Don't toggle if we clicked on a button or link
+                                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+                                    return;
+                                }
+                                
+                                // Toggle content visibility
+                                if (contentContainer.style.display === 'none') {
+                                    contentContainer.style.display = 'block';
+                                    // When expanding, make sure we have consistent padding
+                                    item.style.padding = '8px 8px 8px 8px'; 
+                                } else {
+                                    contentContainer.style.display = 'none';
+                                    // Reset the padding when collapsed - this is key!
+                                    item.style.padding = '0px';
+                                }
+                                
+                                e.stopPropagation();
+                            });
+                            
                         } catch (err) {
                             console.error("Preview fetch failed:", err);
                         }
