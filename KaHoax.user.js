@@ -624,9 +624,15 @@
             'API': '#607D8B'          // Blue Gray
         };
         
+        // Function to get size factor based on screen width
+        const getBadgeSizeFactor = () => {
+            return window.innerWidth < 385 ? 0.82 : 1;
+        };
+        
         // Add roles badges - display multiple small badges
         if (roles && roles.length > 0) {
             const badgesContainer = document.createElement('div');
+            badgesContainer.className = 'role-badges-container';
             badgesContainer.style.position = 'absolute';
             badgesContainer.style.right = '0';
             badgesContainer.style.top = '50%';
@@ -636,6 +642,8 @@
             
             roles.forEach((role) => {
                 const badge = document.createElement('div');
+                badge.className = 'role-badge';
+                badge.dataset.role = role;
                 badge.style.backgroundColor = badgeColors[role] || '#888888';
                 badge.style.color = 'white';
                 badge.style.fontSize = '0.7em';
@@ -1337,6 +1345,48 @@
                 transform: translateX(18px);
             }
         }
+        
+        /* Styles for small screens - badges sizing */
+        @media (max-width: 385px) and (min-width: 356px) {
+            .role-badge {
+                font-size: 0.574em !important; /* 0.7 * 0.82 */
+                padding: 1.64px 4.1px !important; /* 2px * 0.82, 5px * 0.82 */
+                border-radius: 8.2px !important; /* 10px * 0.82 */
+            }
+            
+            .role-badges-container {
+                gap: 3.28px !important; /* 4px * 0.82 */
+            }
+        }
+        
+        /* Styles for very small screens - even smaller badges */
+        @media (max-width: 355px) {
+            .role-badge {
+                font-size: 0.525em !important; /* 0.7 * 0.75 */
+                padding: 1.5px 3.75px !important; /* 2px * 0.75, 5px * 0.75 */
+                border-radius: 7.5px !important; /* 10px * 0.75 */
+            }
+            
+            .role-badges-container {
+                gap: 3px !important; /* 4px * 0.75 */
+            }
+        }
     `;
     document.head.appendChild(toggleStyle);
+    
+    // Add classes to all badges for CSS targeting
+    function applyBadgeClasses() {
+        const badges = document.querySelectorAll('[data-role]');
+        badges.forEach(badge => {
+            badge.classList.add('role-badge');
+        });
+        
+        const badgeContainers = document.querySelectorAll('div[style*="position: absolute"][style*="right: 0"][style*="top: 50%"]');
+        badgeContainers.forEach(container => {
+            container.classList.add('role-badges-container');
+        });
+    }
+    
+    // Run after a short delay to ensure DOM is ready
+    setTimeout(applyBadgeClasses, 500);
 })();
