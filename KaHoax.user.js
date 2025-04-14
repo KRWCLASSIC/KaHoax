@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KaHoax
-// @version      1.1.4
+// @version      1.1.5
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
@@ -8,7 +8,15 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Version = '1.1.4';
+    // Load KRW API
+    (function() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/gh/KRWCLASSIC/KaHoax@main/api.js';
+        script.onload = () => console.log('✅ KRW API loaded');
+        document.head.appendChild(script);
+    })();
+
+    var Version = '1.1.5 - TEST';
 
     var questions = [];
     var info = {
@@ -757,21 +765,22 @@
 
     // --- Fallback Dropdown Search ---
     function searchPublicUUID(searchTerm) {
-        const searchUrl = 'https://damp-leaf-16aa.johnwee.workers.dev/rest/kahoots/?query=' + encodeURIComponent(searchTerm);
-        console.log("Fallback search URL:", searchUrl);
-        fetch(searchUrl)
-          .then(response => response.json())
-          .then(data => {
-              console.log("Fallback search data:", data);
-              let results = (data.entities && data.entities.length > 0) ? data.entities : [];
+        console.log("Fallback search for:", searchTerm);
+        
+        // Use the KRW API searchQuizzes function
+        searchQuizzes(searchTerm)
+          .then(searchResult => {
+              console.log("Fallback search data:", searchResult);
               dropdown.innerHTML = "";
-              if (Array.isArray(results) && results.length > 0) {
+              
+              if (searchResult.success && searchResult.results.length > 0) {
                   dropdown.appendChild(dropdownHeader); // Re-add the header with X button
-                  results.forEach(entity => {
-                      let card = entity.card || {};
-                      let displayTitle = card.title || card.name || "No title";
-                      let displayCover = card.cover || card.image || 'https://dummyimage.com/50x50/ccc/fff.png&text=No+Image';
-                      let quizUUID = card.uuid || card.id || "";
+                  
+                  searchResult.results.forEach(quiz => {
+                      let displayTitle = quiz.title || "No title";
+                      let displayCover = quiz.cover || 'https://dummyimage.com/50x50/ccc/fff.png&text=No+Image';
+                      let quizUUID = quiz.uuid || "";
+                      
                       const item = document.createElement('div');
                       item.style.display = 'flex';
                       item.style.alignItems = 'center';
@@ -805,11 +814,12 @@
                       item.appendChild(text);
                       
                     item.addEventListener('click', async function() {
-                        const quizUrl = 'https://damp-leaf-16aa.johnwee.workers.dev/api-proxy/' + encodeURIComponent(quizUUID);
                         try {
-                            const res = await fetch(quizUrl);
-                            if (!res.ok) throw new Error("Fetch failed");
-                            const data = await res.json();
+                            console.log("Fetching quiz details for:", quizUUID);
+                            const quizResult = await fetchQuizById(quizUUID);
+                            
+                            if (!quizResult.success) throw new Error("Fetch failed");
+                            const data = quizResult.data;
                         
                             // If we already have the expanded view, do nothing (avoid duplicates)
                             if (item.classList.contains('expanded-item')) {
@@ -1148,29 +1158,45 @@
     function handleInputChange() {
         var rawInput = inputBox.value;
         var quizID = sanitizeInput(rawInput);
-        const url = 'https://damp-leaf-16aa.johnwee.workers.dev/api-proxy/' + encodeURIComponent(quizID);
-        console.log("Direct lookup URL:", url);
+        console.log("Direct lookup for quiz ID:", quizID);
+        
+        // Check if the API functions are available
+        if (typeof fetchQuizById !== 'function' || typeof searchQuizzes !== 'function') {
+            console.error("API not loaded yet. Please try again in a moment.");
+            inputBox.style.backgroundColor = 'orange';
+            setTimeout(() => {
+                inputBox.style.backgroundColor = '#333333';
+            }, 2000);
+            return;
+        }
+        
         if (quizID !== "") {
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error('Direct lookup failed');
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Direct lookup data:", data);
-                    inputBox.style.backgroundColor = 'green';
-                    dropdown.style.display = 'none';
-                    dropdownCloseButton.style.display = 'none';
-                    questions = parseQuestions(data.questions);
-                    info.numQuestions = questions.length;
-                })
-                .catch(error => {
-                    console.error("Direct lookup error:", error);
-                    inputBox.style.backgroundColor = 'red';
-                    info.numQuestions = 0;
-                    // Fallback: offer public search suggestions.
-                    searchPublicUUID(quizID);
-                });
+            // Check if valid quiz ID
+            if (isValidQuizId(quizID)) {
+                fetchQuizById(quizID)
+                    .then(result => {
+                        console.log("Direct lookup result:", result);
+                        if (result.success) {
+                            inputBox.style.backgroundColor = 'green';
+                            dropdown.style.display = 'none';
+                            dropdownCloseButton.style.display = 'none';
+                            questions = parseQuestions(result.data.questions);
+                            info.numQuestions = questions.length;
+                        } else {
+                            throw new Error('Quiz not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Direct lookup error:", error);
+                        inputBox.style.backgroundColor = 'red';
+                        info.numQuestions = 0;
+                        // Fallback: offer public search suggestions.
+                        searchPublicUUID(quizID);
+                    });
+            } else {
+                // Try searching by name instead
+                searchPublicUUID(quizID);
+            }
         } else {
             inputBox.style.backgroundColor = '#333333';
             info.numQuestions = 0;
@@ -1182,26 +1208,20 @@
     function parseQuestions(questionsJson){
         let questions = [];
         questionsJson.forEach(function (question){
-            let q = {type: question.type, time: question.time};
-            if (['quiz', 'multiple_select_quiz'].includes(question.type)){
-                var i = 0;
-                q.answers = [];
-                q.incorrectAnswers = [];
-                question.choices.forEach(function(choice){
-                    if (choice.correct) {
-                        q.answers.push(i);
-                    } else {
-                        q.incorrectAnswers.push(i);
-                    }
-                    i++;
-                });
+            // Our API already provides answers and incorrectAnswers for quiz types,
+            // so we can just use those properties directly
+            let q = {
+                type: question.type, 
+                time: question.time,
+                answers: question.answers || [],
+                incorrectAnswers: question.incorrectAnswers || []
+            };
+            
+            // For open-ended questions, make sure we have the answers array
+            if (question.type == 'open_ended' && !q.answers.length) {
+                q.answers = question.choices ? question.choices.map(c => c.answer) : [];
             }
-            if (question.type == 'open_ended') {
-                q.answers = [];
-                question.choices.forEach(function(choice){
-                    q.answers.push(choice.answer);
-                });
-            }
+            
             questions.push(q);
         });
         return questions;
