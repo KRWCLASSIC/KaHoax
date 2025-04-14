@@ -11,8 +11,7 @@
     // Load KRW API
     (function() {
         const script = document.createElement('script');
-        //script.src = 'https://cdn.jsdelivr.net/gh/KRWCLASSIC/KaHoax@main/api.js';
-        script.src = 'https://raw.githubusercontent.com/KRWCLASSIC/KaHoax/refs/heads/main/api.js';
+        script.src = 'https://cdn.jsdelivr.net/gh/KRWCLASSIC/KaHoax@main/api.js';
         script.onload = () => console.log('✅ KRW API loaded');
         document.head.appendChild(script);
     })();
