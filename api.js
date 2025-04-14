@@ -150,9 +150,10 @@ function isValidQuizId(id) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 }
 
-// Export the API functions
-module.exports = {
-    fetchQuizById,
-    searchQuizzes,
-    isValidQuizId
-};
+// Make functions globally available for browser
+window.fetchQuizById = fetchQuizById;
+window.searchQuizzes = searchQuizzes;
+window.isValidQuizId = isValidQuizId;
+
+// Log that API is ready to use
+console.log('KRW API initialized successfully.');
