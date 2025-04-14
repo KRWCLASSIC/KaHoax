@@ -30,7 +30,7 @@ The latest version includes Auto Answer, Show Answers and Quiz search based on J
 
 ![KaHoax2](https://github.com/user-attachments/assets/04b33000-2d21-4766-86ff-2406de382abd)
 
-![KaHoaxMobile](https://github.com/user-attachments/assets/8163d803-2593-4fa2-9196-955c456a1295)
+<img src="https://github.com/user-attachments/assets/8163d803-2593-4fa2-9196-955c456a1295" alt="KaHoaxMobile" width="200"/>
 
 </details>
 
