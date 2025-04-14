@@ -1,8 +1,18 @@
 // api.js
 
 // Constants
+const CORS_PROXY = 'https://corsproxy.io/?';
 const KAHOOT_BASE_URL = 'https://kahoot.it/rest/kahoots/';
 const KAHOOT_SEARCH_URL = 'https://kahoot.it/rest/kahoots/';
+
+/**
+ * Creates a proxied URL to bypass CORS restrictions
+ * @param {string} url - Original URL
+ * @returns {string} - Proxied URL
+ */
+function createProxiedUrl(url) {
+    return CORS_PROXY + encodeURIComponent(url);
+}
 
 /**
  * Fetches quiz data directly from Kahoot
@@ -11,7 +21,8 @@ const KAHOOT_SEARCH_URL = 'https://kahoot.it/rest/kahoots/';
  */
 async function fetchQuizById(quizId) {
     try {
-        const response = await fetch(KAHOOT_BASE_URL + quizId);
+        const targetUrl = KAHOOT_BASE_URL + quizId;
+        const response = await fetch(createProxiedUrl(targetUrl));
         if (!response.ok) {
             throw new Error('Quiz not found');
         }
@@ -21,6 +32,7 @@ async function fetchQuizById(quizId) {
             data: parseQuizData(data)
         };
     } catch (error) {
+        console.error("Error fetching quiz:", error);
         return {
             success: false,
             error: error.message
@@ -115,7 +127,8 @@ async function searchQuizzes(query) {
             cursor: 0
         });
 
-        const response = await fetch(`${KAHOOT_SEARCH_URL}?${searchParams}`);
+        const targetUrl = `${KAHOOT_SEARCH_URL}?${searchParams}`;
+        const response = await fetch(createProxiedUrl(targetUrl));
         if (!response.ok) {
             throw new Error('Search failed');
         }
@@ -133,6 +146,7 @@ async function searchQuizzes(query) {
             }))
         };
     } catch (error) {
+        console.error("Error searching quizzes:", error);
         return {
             success: false,
             error: error.message
@@ -150,10 +164,8 @@ function isValidQuizId(id) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 }
 
-// Make functions globally available for browser
+// Make functions available globally
 window.fetchQuizById = fetchQuizById;
 window.searchQuizzes = searchQuizzes;
 window.isValidQuizId = isValidQuizId;
-
-// Log that API is ready to use
-console.log('KRW API initialized successfully.');
+console.log("KRW API ready");
