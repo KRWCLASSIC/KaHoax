@@ -310,6 +310,8 @@
     uiElement.style.width = '350px';
     uiElement.style.maxWidth = '90vw';
     uiElement.style.height = 'auto';
+    uiElement.style.maxHeight = '90vh'; // Limit height to 90% of viewport
+    uiElement.style.overflowY = 'auto'; // Add vertical scrolling when needed
     uiElement.style.backgroundColor = '#1e1e1e';
     uiElement.style.borderRadius = '10px';
     uiElement.style.boxShadow = '0px 0px 10px 0px rgba(0, 0, 0, 0.5)';
@@ -332,6 +334,9 @@
     handle.style.boxSizing = 'border-box';
     handle.style.display = 'flex';
     handle.style.alignItems = 'center';
+    handle.style.position = 'sticky';
+    handle.style.top = '0';
+    handle.style.zIndex = '10001';
 
     // Add Kahoot icon with filter to make it white
     const kahootIcon = document.createElement('img');
@@ -648,6 +653,8 @@
     dropdown.style.overflowY = 'auto';
     dropdown.style.display = 'none';
     dropdown.style.boxSizing = 'border-box';
+    // Make sure dropdown doesn't go off-screen
+    dropdown.style.maxHeight = 'min(300px, calc(90vh - 100% - 20px))'; // Ensure it fits in the viewport
     inputContainer.appendChild(dropdown);
 
     // Create a header for the dropdown with the X button
@@ -980,8 +987,29 @@
     }
     
     /* Ensure the overflow is visible when needed for all elements */
-    .dropdown, .question-list, .question-content {
+    .dropdown, .question-list, .question-content, .floating-ui {
         scrollbar-width: thin;
+    }
+    
+    /* Custom scrollbar for the main UI container */
+    .floating-ui::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .floating-ui::-webkit-scrollbar-track {
+        background: transparent;
+        margin: 5px 0;
+    }
+    
+    .floating-ui::-webkit-scrollbar-thumb {
+        background: rgba(85, 85, 85, 0.6);
+        border-radius: 10px;
+        border: 2px solid #1e1e1e;
+    }
+    
+    .floating-ui::-webkit-scrollbar-thumb:hover {
+        background: rgba(119, 119, 119, 0.8);
     }
     `;
     document.head.appendChild(scrollbarStyle);
@@ -1398,6 +1426,7 @@
             sliderContainer.style.display = 'none';
             answeringContainer.style.display = 'none';
             uiElement.style.height = '40px';
+            uiElement.style.overflowY = 'hidden';
         } else {
             headerText.style.display = 'block';
             header3.style.display = 'block';
@@ -1408,8 +1437,17 @@
             allQuestionsContainer.style.display = 'flex';
             linksSection.style.display = 'block';
             uiElement.style.height = 'auto';
+            uiElement.style.maxHeight = '90vh';
+            uiElement.style.overflowY = 'auto';
             sliderContainer.style.display = 'flex';
             answeringContainer.style.display = 'flex';
+            
+            // Ensure we don't show scrollbar when not needed
+            setTimeout(() => {
+                if (uiElement.scrollHeight <= uiElement.clientHeight) {
+                    uiElement.style.overflowY = 'hidden';
+                }
+            }, 50); // Small delay to ensure DOM is updated
         }
     });
 
@@ -1872,6 +1910,20 @@
     }
 
     document.body.appendChild(uiElement);
+    
+    // Add resize observer to dynamically show/hide scrollbar based on content height
+    const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            if (!isMinimized && entry.target === uiElement) {
+                if (uiElement.scrollHeight > uiElement.clientHeight) {
+                    uiElement.style.overflowY = 'auto';
+                } else {
+                    uiElement.style.overflowY = 'hidden';
+                }
+            }
+        }
+    });
+    resizeObserver.observe(uiElement);
 
     function parseQuestions(questionsJson){
         let questions = [];
