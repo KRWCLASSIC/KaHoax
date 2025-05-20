@@ -1,5 +1,5 @@
 
-# KaHoax `1.1.4`
+# KaHoax `1.1.4.1`
 
 This is a Kahoot cheat made for browsers and Tampermonkey.
 
@@ -33,6 +33,12 @@ The latest version includes Auto Answer, Show Answers and Quiz search based on J
 <img src="https://github.com/user-attachments/assets/8163d803-2593-4fa2-9196-955c456a1295" alt="KaHoaxMobile" width="200"/>
 
 </details>
+
+## TODO etc
+
+Working on new features like:
+
+- Support for auto type answers
 
 ## Credits
 
