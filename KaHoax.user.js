@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KaHoax
-// @version      1.1.4.1
+// @version      1.1.5
 // @description  A hack for kahoot.it! First tries proxy lookup by Quiz ID. If that fails, uses fallback search and displays a scrollable dropdown for selection.
 // @namespace    https://github.com/KRWCLASSIC
 // @match        https://kahoot.it/*
@@ -8,7 +8,7 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Version = '1.1.4.1';
+    var Version = '1.1.5';
 
     var questions = [];
     var info = {
@@ -1965,52 +1965,84 @@
     }
 
     function highlightAnswers(question){
+        if (!question || !question.answers) return;
         question.answers.forEach(function (answer) {
             setTimeout(function() {
-                const answerButton = FindByAttributeValue("data-functional-selector", 'answer-' + answer, "button");
-                if (answerButton) answerButton.style.backgroundColor = 'rgb(0, 255, 0)';
+                const answerButton = document.querySelector('[data-functional-selector="answer-' + answer + '"]');
+                if (answerButton) {
+                    answerButton.style.backgroundColor = 'rgb(0, 255, 0)';
+                    answerButton.style.setProperty('--bg', 'rgb(0, 255, 0)');
+                }
             }, 0);
         });
-        question.incorrectAnswers.forEach(function (answer) {
-            setTimeout(function() {
-                const answerButton = FindByAttributeValue("data-functional-selector", 'answer-' + answer, "button");
-                if (answerButton) answerButton.style.backgroundColor = 'rgb(255, 0, 0)';
-            }, 0);
-        });
+        if (question.incorrectAnswers) {
+            question.incorrectAnswers.forEach(function (answer) {
+                setTimeout(function() {
+                    const answerButton = document.querySelector('[data-functional-selector="answer-' + answer + '"]');
+                    if (answerButton) {
+                        answerButton.style.backgroundColor = 'rgb(255, 0, 0)';
+                        answerButton.style.setProperty('--bg', 'rgb(255, 0, 0)');
+                    }
+                }, 0);
+            });
+        }
+    }
+
+    function triggerReactAction(element, eventType) {
+        if (!element) return;
+        const propKey = Object.keys(element).find(k => k.startsWith('__reactProps$'));
+        if (propKey && element[propKey]) {
+            const props = element[propKey];
+            if (eventType === 'click' && typeof props.onClick === 'function') {
+                props.onClick({ isTrusted: true, preventDefault: () => {}, stopPropagation: () => {} });
+                return;
+            }
+            if (eventType === 'change' && typeof props.onChange === 'function') {
+                props.onChange({ isTrusted: true, target: { checked: !element.checked } });
+                return;
+            }
+        }
+        element.click();
     }
 
     function answer(question, time) {
+        if (!question || !question.answers || question.answers.length === 0) return;
         Answered_PPT = PPT;
         var delay = (question.type == 'multiple_select_quiz') ? 60 : 0;
         setTimeout(function() {
             if (question.type == 'quiz') {
-                const key = (+question.answers[0] + 1).toString();
-                const event = new KeyboardEvent('keydown', { key: key });
-                window.dispatchEvent(event);
+                const answerButton = document.querySelector('[data-functional-selector="answer-' + question.answers[0] + '"]');
+                if (answerButton) {
+                    triggerReactAction(answerButton, 'click');
+                }
             }
             if (question.type == 'multiple_select_quiz') {
                 question.answers.forEach(function(answer) {
                     setTimeout(function() {
-                        const key = (+answer + 1).toString();
-                        const event = new KeyboardEvent('keydown', { key: key });
-                        window.dispatchEvent(event);
+                        const labelEl = document.querySelector('[data-functional-selector="answer-' + answer + '"]');
+                        if (labelEl) {
+                            const checkbox = labelEl.querySelector('input[type="checkbox"]') || labelEl;
+                            triggerReactAction(checkbox, 'change');
+                        }
                     }, 0);
                 });
                 setTimeout(function() {
-                    const submitButton = FindByAttributeValue("data-functional-selector", 'multi-select-submit-button', "button");
-                    if (submitButton) submitButton.click();
-                }, 0);
+                    const submitButton = document.querySelector('[data-functional-selector="multi-select-submit-button"]');
+                    if (submitButton) {
+                        triggerReactAction(submitButton, 'click');
+                    }
+                }, 50);
             }
-        }, time - delay);
+        }, Math.max(0, time - delay));
     }
 
     // Interval loop: checks question state, auto-answer logic, etc.
     setInterval(function () {
-        var textElement = FindByAttributeValue("data-functional-selector", "question-index-counter", "div");
+        var textElement = document.querySelector('[data-functional-selector="question-index-counter"]');
         if (textElement){
             info.questionNum = +textElement.textContent - 1;
         }
-        if (FindByAttributeValue("data-functional-selector", 'answer-0', "button") && info.lastAnsweredQuestion != info.questionNum) {
+        if (document.querySelector('[data-functional-selector="answer-0"]') && info.lastAnsweredQuestion != info.questionNum) {
             info.lastAnsweredQuestion = info.questionNum;
             onQuestionStart();
         }
@@ -2018,10 +2050,11 @@
             if (info.ILSetQuestion != info.questionNum){
                 var ppt = Answered_PPT;
                 if (ppt > 987) ppt = 1000;
-                var incrementElement = FindByAttributeValue("data-functional-selector", "score-increment", "span");
+                var incrementElement = document.querySelector('[data-functional-selector="score-increment"]');
                 if (incrementElement){
                     info.ILSetQuestion = info.questionNum;
-                    var increment = +incrementElement.textContent.split(" ")[1];
+                    var match = incrementElement.textContent.match(/\d+/);
+                    var increment = match ? +match[0] : 0;
                     if (increment != 0){
                         inputLag += (ppt - increment) * 15;
                         if (inputLag < 0) {
